@@ -4,9 +4,10 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+import os
 
 # Set up the options for the Chrome driver
-chrome_driver_path = "C:/Users/bpali/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+chrome_driver_path = os.environ.get('CHROME_DRIVER_PATH')
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
@@ -51,6 +52,20 @@ pages = [
 
 # define scraper function
 def scrape_table(url, table_id):
+    """
+    Scrape a table from a given URL using its table_id and return the table as a pandas DataFrame.
+
+    Parameters:
+    - url (str): The URL of the webpage containing the table.
+    - table_id (str): The HTML ID attribute of the table to scrape.
+
+    Returns:
+    - pd.DataFrame: A DataFrame containing the scraped table data.
+
+    Note:
+    This function assumes the use of a globally available WebDriver object named 'driver'.
+    Ensure that 'driver' is properly initialized and operational before calling this function.
+    """
     # Navigate to the URL
     driver.get(url)
 
@@ -94,6 +109,18 @@ def scrape_table(url, table_id):
 
 # function to make sure data types are correct
 def convert_columns_to_numeric(df):
+    """
+    Convert all appropriate columns in a dataframe to numeric.
+
+    Parameters:
+    - df (pd.DataFrame): The input DataFrame whose columns are to be converted.
+
+    Returns:
+    - pd.DataFrame: A DataFrame with columns converted to numeric where possible.
+
+    Note:
+    Columns that can't be converted to numeric will be left unchanged.
+    """
     for col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='ignore')
     return df
@@ -101,6 +128,20 @@ def convert_columns_to_numeric(df):
 
 # function to extract player surnames
 def extract_surname(full_name):
+    """
+    Extract and return the surname from a given full name.
+
+    Parameters:
+    - full_name (str): The full name from which the surname is to be extracted.
+
+    Returns:
+    - str: The extracted surname.
+
+    Note:
+    Assumes the surname is the last word in the full name. If the full name is a single word,
+    it will be returned as is.
+    """
+
     return full_name.split()[-1]
 
 
